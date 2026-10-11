@@ -1,3 +1,5 @@
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
         Memoria memoria = new Memoria();
@@ -8,13 +10,15 @@ public class Main {
         memoria.setByte(1, 0x00); //primeira metade do deslocamento
         memoria.setByte(2, 0x05); //segunda metade do deslocamento
 
-        System.out.println("Acumulador (A) antes: " + regs.get(Registradores.A));
-        System.out.println("PC antes: " + regs.getPC());
+        executor.setEnderecoFinal(3);
         
-        executor.executarPasso();
-
-        System.out.println("\n--- Depois de executar o passo ---");
-        System.out.println("Acumulador (A) depois: " + regs.get(Registradores.A));
-        System.out.println("PC depois: " + regs.getPC());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run(){
+                Interface janela = new Interface(memoria,regs, executor);
+            
+                janela.setVisible(true);
+            }
+        });
+        
     }
 }

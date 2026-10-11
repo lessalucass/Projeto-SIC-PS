@@ -1,16 +1,27 @@
 public class Executor {
     private Memoria memoria;
     private Registradores regs;
+    private int enderecoFinal = 0;
+
 
     public Executor(Memoria memoria, Registradores regs) {
         this.memoria = memoria;
         this.regs = regs;
     }
 
-    public void executarPasso() {
+    public void setEnderecoFinal(int fim){
+        this.enderecoFinal = fim;
+    }
+
+    public boolean executarPasso() {
         int pcAtual = regs.getPC();
+
+        if (enderecoFinal > 0 && pcAtual >= enderecoFinal){
+            return false;
+        }
+
         int byte1 = memoria.getByte(pcAtual);
-        
+
         //os 6 primeiros bits definem a operação nas instruções formato 3 e 4
         int opcode = byte1 & 0xFC; 
         int opcodePuro = byte1 & 0xFF; //para identificar Formato 2
@@ -30,7 +41,7 @@ public class Executor {
             int reg2 = (byte2 & 0x0F);
             regs.setPC(pcAtual + 2);
             executarFormato2(opcodePuro, reg1, reg2);
-            return; // Encerra o passo aqui
+            return true; // Encerra o passo aqui
         }
 
         //Tratamento de formato 3 e 4
@@ -110,6 +121,7 @@ public class Executor {
                 System.out.println("Instrução F3/F4 não implementada: " + Integer.toHexString(opcode));
                 break;
         }
+        return true;
     }
 
     private void executarFormato2(int opcode, int r1, int r2) {
@@ -145,5 +157,9 @@ public class Executor {
             return 2;
         }
         return 3; //retorna 3 e pode virar 4 se a flag 'e' for verdadeira
+    }
+
+    public boolean atingiuFim(){
+        return enderecoFinal > 0 && regs.getPC() >= enderecoFinal;
     }
 }
