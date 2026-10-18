@@ -1,3 +1,5 @@
+package maquinavirtual;
+
 public class Executor {
     private Memoria memoria;
     private Registradores regs;

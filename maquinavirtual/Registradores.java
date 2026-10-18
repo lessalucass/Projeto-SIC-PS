@@ -1,4 +1,4 @@
-
+package maquinavirtual;
 /**
  * Banco de registradores do SIC/XE (9 registradores).
  * A, X, L, B, S, T, PC, SW: 24 bits (int mascarado).

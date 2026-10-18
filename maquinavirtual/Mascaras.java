@@ -1,4 +1,4 @@
-
+package maquinavirtual;
 /*
  Utilitários de máscara de bits da arquitetura SIC/XE.
  Convenção: todo valor é armazenado SEM sinal, já mascarado.

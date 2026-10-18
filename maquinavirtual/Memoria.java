@@ -1,3 +1,4 @@
+package maquinavirtual;
 /*
  Memória do SIC/XE: vetor de bytes, endereçamento por byte, big-endian.
  Palavra = 3 bytes (24 bits). Palavra de ponto flutuante = 6 bytes (48 bits).
