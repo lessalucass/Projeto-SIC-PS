@@ -1,21 +1,7 @@
 package montador;
 
-/**
- * Parte 5 - Resolução de Operandos
- * Responsável por extrair e avaliar o valor numérico de expressões,
- * literais e símbolos em ambas as passagens do montador.
- */
 public class Operandos {
 
-    /**
-     * Avalia o campo de operando e retorna seu valor numérico.
-     * Trata literais decimais, hexadecimais ($ ou X'..'), caracteres ('..' ou C'..'),
-     * e busca rótulos na Tabela de Símbolos.
-     *
-     * @param operandoTexto A string original do operando (ex: "#100", "$6000", "C'EOF'", "VALUE", "BUFFER,X")
-     * @param tabelaSimbolos Instância da Tabela de Símbolos do Passo 1
-     * @return Valor numérico resolvido
-     */
     public static int getValorOperando(String operandoTexto, TabelaSimbolos tabelaSimbolos) {
         if (operandoTexto == null || operandoTexto.trim().isEmpty()) {
             return 0;
@@ -90,9 +76,7 @@ public class Operandos {
         throw new IllegalArgumentException("Símbolo não encontrado na Tabela de Símbolos: " + op);
     }
 
-    /**
-     * Converte caracteres ASCII concatenados para valor numérico inteiro.
-     */
+    /*Converte caracteres ASCII concatenados para valor numérico inteiro.*/
     private static int converterStringParaIntASCII(String str) {
         if (str.length() == 1) {
             return (int) str.charAt(0);
@@ -104,9 +88,7 @@ public class Operandos {
         return valor;
     }
 
-    /**
-     * Verifica se a string é formada exclusivamente por dígitos numéricos (com sinal opcional).
-     */
+    /*Verifica se a string é formada exclusivamente por dígitos numéricos (com sinal opcional).*/
     private static boolean eNumeroDecimal(String str) {
         if (str == null || str.isEmpty()) return false;
         int inicio = (str.charAt(0) == '-' || str.charAt(0) == '+') ? 1 : 0;

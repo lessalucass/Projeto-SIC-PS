@@ -1,0 +1,39 @@
+LeitorFonte
+
+abrir(caminho) abre o arquivo.
+lerLinha() devolve a próxima linha, ou null no fim do arquivo.
+reiniciar() volta ao início, para o Passo 2.
+fechar() fecha o arquivo.
+Acrescentei getNumeroLinha() para o Passo 1 e o Passo 2 mostrarem o número da linha nas mensagens de erro.
+Os erros são IllegalArgumentException com mensagem em português, como pede a divisão do trabalho.
+
+Analisador
+
+Os métodos são estáticos e recebem a linha: getRotulo(linha), getOperacao(linha) e getOperando(linha).
+getRotulo devolve null se a linha não começa na primeira coluna. Mantém a caixa original e aceita ROT: com dois-pontos.
+getOperacao devolve o mnemônico em maiúsculas e mantém o + do formato 4 (ex.: +JSUB), que o TabelasMontador já trata.
+getOperando devolve "" quando não há operando.
+Comentários com ; são removidos, exceto dentro de aspas simples, então C';' continua funcionando.
+Escolhi tirar os espaços do operando fora de aspas, para BUFFER, X virar BUFFER,X. Sem isso o Operandos não reconheceria o sufixo ,X. Dentro de aspas os espaços ficam, como em C'A B'.
+Acrescentei linhaVazia(linha), que o laço dos passos pode usar para pular linhas em branco ou só com comentário.
+Em linha vazia ou só com comentário, getOperacao devolve "" e não null, para evitar NullPointerException; o Passo 1 pode testar isEmpty().
+
+operandos
+
+
+/**
+ * Parte 5 - Resolução de Operandos
+ * Responsável por extrair e avaliar o valor numérico de expressões,
+ * literais e símbolos em ambas as passagens do montador.
+ */
+
+    /**
+     * Avalia o campo de operando e retorna seu valor numérico.
+     * Trata literais decimais, hexadecimais ($ ou X'..'), caracteres ('..' ou C'..'),
+     * e busca rótulos na Tabela de Símbolos.
+     *
+     * @param operandoTexto A string original do operando (ex: "#100", "$6000", "C'EOF'", "VALUE", "BUFFER,X")
+     * @param tabelaSimbolos Instância da Tabela de Símbolos do Passo 1
+     * @return Valor numérico resolvido
+     */
+
