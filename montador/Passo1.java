@@ -116,7 +116,32 @@ public class Passo1 {
                 return lc + qtdB;
 
             case "WORD":
+            case "DC":
+                if (operando == null || operando.trim().isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Diretiva " + operacao + " requer um operando."
+                    );
+                }
                 return lc + 3;
+
+            case "DS":
+                if (operando == null || operando.trim().isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Diretiva DS requer um operando."
+                    );
+                }
+
+                int quantidade = Operandos.getValorOperando(
+                        operando, tabelaSimbolos
+                );
+
+                if (quantidade < 0) {
+                    throw new IllegalArgumentException(
+                            "Quantidade invalida para DS."
+                    );
+                }
+
+                return lc + quantidade;
 
             case "BYTE":
                 int tamanhoByte = calcularTamanhoByte(operando);

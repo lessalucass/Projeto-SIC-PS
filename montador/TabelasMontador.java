@@ -22,6 +22,9 @@ public class TabelasMontador {
         POT.add("LTORG");
         POT.add("BASE");
         POT.add("NOBASE");
+        POT.add("ORG");
+        POT.add("DC");
+        POT.add("DS");
 
         // Instruções de Formato 2
         MOT.put("ADDR",  new int[]{ 0x90, 2 });
