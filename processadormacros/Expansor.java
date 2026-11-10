@@ -23,7 +23,7 @@ public class Expansor {
 
         String nome = Analisador.getOperacao(linhaChamada).toUpperCase();
         int[] dados = TabelasMacro.TAB_NOME.get(nome);
-        List<String> argumentos = lerArgumentos(Analisador.getOperando(linhaChamada));
+        List<String> argumentos = ParserArgumentos.extrairArgumentos(Analisador.getOperando(linhaChamada));
 
         if (argumentos.size() != dados[2]) {
             throw new IllegalArgumentException(
