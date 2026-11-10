@@ -31,7 +31,7 @@ public class Definidor {
                     "Macro definida mais de uma vez: " + nome);
         }
 
-        List<String> parametros = lerParametros(Analisador.getOperando(linhaPrototipo));
+        List<String> parametros = ParserArgumentos.extrairParametros(Analisador.getOperando(linhaPrototipo));
 
         int inicio = TabelasMacro.TAB_DEFINICAO.size();
         int nivel = 1;
