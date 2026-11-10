@@ -2,6 +2,7 @@ package processadormacros;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import montador.Analisador;
@@ -12,9 +13,13 @@ public class Definidor {
 
     private Definidor() {}
 
+    /** Define a macro lendo as linhas do arquivo fonte */
     public static String definir(String linhaPrototipo, LeitorFonte leitor) {
-        int linhaAbertura = leitor.getNumeroLinha();
+        return definir(linhaPrototipo, () -> leitor.lerLinha(), leitor.getNumeroLinha());
+    }
 
+    /** Define a macro lendo as linhas de qualquer fonte arquivo ou corpo de outra macro */
+    public static String definir(String linhaPrototipo, Supplier<String> proximaLinha, int linhaAbertura) {
         String nome = Analisador.getRotulo(linhaPrototipo);
         if (nome == null || nome.isEmpty()) {
             throw new IllegalArgumentException(
@@ -31,7 +36,7 @@ public class Definidor {
         int inicio = TabelasMacro.TAB_DEFINICAO.size();
         int nivel = 1;
         String linha;
-        while (nivel > 0 && (linha = leitor.lerLinha()) != null) {
+        while (nivel > 0 && (linha = proximaLinha.get()) != null) {
             if (Analisador.linhaVazia(linha)) {
                 continue; // nao gasta espaco da tabela com linhas em branco/comentario
             }
