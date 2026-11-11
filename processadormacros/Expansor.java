@@ -30,9 +30,14 @@ public class Expansor {
                     "Macro " + nome + " espera " + dados[2] + " argumento(s), recebeu " + argumentos.size() + ".");
         }
 
+        String prefixoUnico = GeradorRotulos.gerarPrefixo();
+
         int[] pos = { dados[0] };
         while (pos[0] < dados[1]) {
             String linha = proximaLinha(pos, dados[1], argumentos);
+            if (linha == null) {
+                break;
+            }
             if (Analisador.getOperacao(linha).equals("MACRO")) {
                 // definicao aninhada: registra a macro interna
                 TabelasMacro.TAB_NOME.remove(Analisador.getRotulo(linha).toUpperCase());
@@ -40,6 +45,7 @@ public class Expansor {
             } else if (ehChamada(linha)) {
                 saida.addAll(expandir(linha)); // chamada aninhada
             } else {
+                String linhaComRotuloTratado = GeradorRotulos.aplicarPrefixo(linha, prefixoUnico);
                 saida.add(linha);
             }
         }
