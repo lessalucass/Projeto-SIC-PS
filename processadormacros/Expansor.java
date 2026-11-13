@@ -25,10 +25,9 @@ public class Expansor {
         int[] dados = TabelasMacro.TAB_NOME.get(nome);
         List<String> argumentos = ParserArgumentos.extrairArgumentos(Analisador.getOperando(linhaChamada));
 
-        if (argumentos.size() != dados[2]) {
-            throw new IllegalArgumentException(
-                    "Macro " + nome + " espera " + dados[2] + " argumento(s), recebeu " + argumentos.size() + ".");
-        }
+        ValidadorMacro.validarArgumentos(
+                nome, dados[2], argumentos.size()
+        );
 
         String prefixoUnico = GeradorRotulos.gerarPrefixo();
         List<String> rotulosLocais = lerRotulosLocais(dados[0], dados[1]);

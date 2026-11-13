@@ -21,17 +21,12 @@ public class Definidor {
     /** Define a macro lendo as linhas de qualquer fonte arquivo ou corpo de outra macro */
     public static String definir(String linhaPrototipo, Supplier<String> proximaLinha, int linhaAbertura) {
         String nome = Analisador.getRotulo(linhaPrototipo);
-        if (nome == null || nome.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Macro sem nome na linha " + linhaAbertura + ".");
-        }
+        ValidadorMacro.validarNome(nome);
         nome = nome.toUpperCase();
-        if (TabelasMacro.TAB_NOME.containsKey(nome)) {
-            throw new IllegalArgumentException(
-                    "Macro definida mais de uma vez: " + nome);
-        }
+        ValidadorMacro.validarDuplicidade(nome);
 
         List<String> parametros = ParserArgumentos.extrairParametros(Analisador.getOperando(linhaPrototipo));
+
 
         int inicio = TabelasMacro.TAB_DEFINICAO.size();
         int nivel = 1;
@@ -55,8 +50,7 @@ public class Definidor {
         if (nivel > 0) {
             // desfaz o que foi guardado pela macro incompleta
             TabelasMacro.TAB_DEFINICAO.subList(inicio, TabelasMacro.TAB_DEFINICAO.size()).clear();
-            throw new IllegalArgumentException(
-                    "Macro " + nome + " (linha " + linhaAbertura + ") sem MEND correspondente.");
+            ValidadorMacro.validarMend(nome, nivel, linhaAbertura);
         }
 
         int fim = TabelasMacro.TAB_DEFINICAO.size();
