@@ -31,6 +31,7 @@ public class Expansor {
         }
 
         String prefixoUnico = GeradorRotulos.gerarPrefixo();
+        List<String> rotulosLocais = lerRotulosLocais(dados[0], dados[1]);
 
         int[] pos = { dados[0] };
         while (pos[0] < dados[1]) {
@@ -43,17 +44,25 @@ public class Expansor {
                 TabelasMacro.TAB_NOME.remove(Analisador.getRotulo(linha).toUpperCase());
                 Definidor.definir(linha, () -> proximaLinha(pos, dados[1], argumentos), 0);
             } else if (ehChamada(linha)) {
-                saida.addAll(expandir(linha)); // chamada aninhada
+                // chamada aninhada: os argumentos tambem recebem o prefixo
+                saida.addAll(expandir(trocarReferencias(linha, rotulosLocais, prefixoUnico)));
             } else {
-                String linhaComRotuloTratado = GeradorRotulos.aplicarPrefixo(linha, prefixoUnico);
-                saida.add(linha);
+                String linhaComRotuloTratado = linha;
+                if (rotulosLocais.contains(Analisador.getRotulo(linha))) {
+                    linhaComRotuloTratado = prefixoUnico + linha; // rotulo fica na coluna 0
+                }
+                saida.add(trocarReferencias(linhaComRotuloTratado, rotulosLocais, prefixoUnico));
             }
         }
 
         // rotulo da chamada vai para a primeira linha expandida
         String rotulo = Analisador.getRotulo(linhaChamada);
         if (rotulo != null && !saida.isEmpty()) {
-            saida.set(0, rotulo + saida.get(0));
+            if (Character.isWhitespace(saida.get(0).charAt(0))) {
+                saida.set(0, rotulo + saida.get(0));
+            } else {
+                saida.add(0, rotulo); // primeira linha ja tem rotulo proprio
+            }
         }
         return saida;
     }
@@ -68,16 +77,38 @@ public class Expansor {
         return linha;
     }
 
-    /** "A, B" -> ["A", "B"]. Vazio -> lista vazia. */
-    private static List<String> lerArgumentos(String operando) {
+    /** Rotulos definidos no corpo da macro (ignora macros internas, chamadas e parametros). */
+    private static List<String> lerRotulosLocais(int inicio, int fim) {
         List<String> lista = new ArrayList<>();
-        if (operando == null || operando.isEmpty()) {
-            return lista;
-        }
-        for (String a : operando.split(",", -1)) {
-            lista.add(a.trim());
+        int nivel = 0;
+        for (int i = inicio; i < fim; i++) {
+            String linha = TabelasMacro.TAB_DEFINICAO.get(i);
+            String operacao = Analisador.getOperacao(linha);
+            if (operacao.equals("MACRO")) {
+                nivel++;
+            } else if (operacao.equals("MEND")) {
+                nivel--;
+            } else if (nivel == 0 && !TabelasMacro.TAB_NOME.containsKey(operacao)) {
+                String rotulo = Analisador.getRotulo(linha);
+                if (rotulo != null && !rotulo.isEmpty() && !rotulo.startsWith("?")) {
+                    lista.add(rotulo);
+                }
+            }
         }
         return lista;
+    }
+
+    /** Coloca o prefixo nas referencias aos rotulos locais (depois do rotulo da linha). */
+    private static String trocarReferencias(String linha, List<String> rotulosLocais, String prefixo) {
+        int inicio = 0;
+        while (inicio < linha.length() && !Character.isWhitespace(linha.charAt(inicio))) {
+            inicio++; // pula o rotulo da linha
+        }
+        String resto = linha.substring(inicio);
+        for (String r : rotulosLocais) {
+            resto = resto.replaceAll("\\b" + Pattern.quote(r) + "\\b", Matcher.quoteReplacement(prefixo + r));
+        }
+        return linha.substring(0, inicio) + resto;
     }
 
     /** Troca cada ?n pelo n-esimo argumento. */
