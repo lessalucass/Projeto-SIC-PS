@@ -100,6 +100,7 @@ public class Passo2 {
                                 modAjustada.tamanho = m.tamanho;
                                 modAjustada.sinal = m.sinal;
                                 modAjustada.simbolo = null;
+                                modAjustada.ajuste = csAddr;
                                 pendentes.add(modAjustada);
                             }
                         }
@@ -130,7 +131,7 @@ public class Passo2 {
      * Lê os bytes afetados na memória, aplica a soma/subtração respeitando
      * a largura em meios-bytes (nibbles) e grava o resultado de volta (Big-Endian).
      */
-    private static void aplicarModificacao(Map<Integer, Byte> memoria, int endereco,
+    static void aplicarModificacao(Map<Integer, Byte> memoria, int endereco,
                                            int meiosBytes, char sinal, int valorAjuste) {
         // 5 meios-bytes (20 bits - Formato 4) ou 6 meios-bytes (24 bits - WORD) ocupam 3 bytes
         int numBytes = (meiosBytes + 1) / 2;

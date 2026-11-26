@@ -33,6 +33,7 @@ public class ParserObjeto {
         public int tamanho;
         public char sinal = '+';
         public String simbolo = null;   // null = relocação simples
+        public int ajuste = 0; //valor a somar na relocação
     }
 
     //Converte hexadecimal (String) para int

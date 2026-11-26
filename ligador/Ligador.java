@@ -98,17 +98,13 @@ public class Ligador {
         Registradores regs = new Registradores();
         Executor executor = new Executor(memoria, regs);
 
+        int aplicadas = Carregador.aplicarRelocacao(resultado);
+        System.out.println("Carregador: " + aplicadas + " relocacao(oes) aplicada(s).");
+
         int ultimo = fimPrograma;
         for (Map.Entry<Integer, Byte> e : resultado.memoriaLigada.entrySet()) {
             memoria.setByte(e.getKey(), e.getValue() & 0xFF);
             ultimo = Math.max(ultimo, e.getKey() + 1);
-        }
-
-        int pendentes = resultado.modificacoesPendentes == null
-                ? 0 : resultado.modificacoesPendentes.size();
-        if (pendentes > 0) {
-            System.out.println("Aviso: " + pendentes + " registro(s) M de relocacao simples "
-                    + "pendente(s): o Carregador ainda precisa aplica-los.");
         }
 
         regs.setPC(resultado.enderecoExecucao);
